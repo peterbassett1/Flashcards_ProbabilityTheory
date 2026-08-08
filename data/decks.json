@@ -1,0 +1,410 @@
+[
+  {
+    "id": "discrete-rv",
+    "label": "Discrete RVs",
+    "sub": "Binomial · Poisson · Geometric",
+    "source": "Strategy §Discrete RVs",
+    "cards": [
+      {
+        "id": "d1",
+        "type": "scenario",
+        "q": "Rolling a fair die 20 times. How many 6s do you get?",
+        "a": "Binomial",
+        "note": "Fixed number of independent trials, two outcomes (6 / not-6), constant p."
+      },
+      {
+        "id": "d2",
+        "type": "scenario",
+        "q": "Emails arriving in a fixed hour. Rare, independent, can cluster.",
+        "a": "Poisson",
+        "note": "Count of rare independent events in a fixed interval."
+      },
+      {
+        "id": "d3",
+        "type": "scenario",
+        "q": "Flipping a coin until the first head appears. How many flips?",
+        "a": "Geometric",
+        "note": "Number of independent trials up to (and including) the first success."
+      },
+      {
+        "id": "d4",
+        "type": "scenario",
+        "q": "Number of defective items in a batch of 50, with a fixed defect rate.",
+        "a": "Binomial",
+        "note": "n = 50 fixed trials, each item defective or not, constant probability."
+      },
+      {
+        "id": "d5",
+        "type": "intuition",
+        "q": "The success probability in a Binomial",
+        "qs": "p",
+        "a": "Probability of success on each single trial.",
+        "note": "Near 0 → successes rare; p = 0.5 → symmetric distribution."
+      },
+      {
+        "id": "d6",
+        "type": "intuition",
+        "q": "The rate parameter of a Poisson",
+        "qs": "λ",
+        "a": "Expected count per unit time or space.",
+        "note": "Emails average 3/hr → λ = 3. Higher λ = expect more events."
+      },
+      {
+        "id": "d7",
+        "type": "check",
+        "q": "Mean and variance of a Binomial(n, p)",
+        "a": "E[X] = np,  Var[X] = np(1−p)",
+        "note": "As p → 0 the variance shrinks — fewer successes overall."
+      },
+      {
+        "id": "d8",
+        "type": "check",
+        "q": "Mean and variance of a Poisson(λ)",
+        "a": "E[X] = λ  and  Var[X] = λ",
+        "note": "Mean equals variance — a Poisson fingerprint. If Var ≫ mean, it's overdispersed."
+      },
+      {
+        "id": "d9",
+        "type": "check",
+        "q": "Mean of a Geometric — trials until the first success (p)",
+        "a": "E[X] = 1/p",
+        "note": "p = 0.2 → expect 5 trials. Rarer success = longer wait."
+      },
+      {
+        "id": "d10",
+        "type": "check",
+        "q": "For a Poisson(λ), the probability of zero events",
+        "qeq": "P(N = 0)",
+        "a": "e^{−λ}",
+        "note": "λ = 2 → P(0) ≈ 0.135. Not zero: rare events often just don't happen."
+      },
+      {
+        "id": "d11",
+        "type": "trap",
+        "q": "\"Can I use a Poisson approximation to a Binomial with n = 20, p = 0.4?\"",
+        "a": "No — np = 8 is too big.",
+        "note": "Poisson approximates Binomial when n is large and p is small (np stays moderate)."
+      },
+      {
+        "id": "d12",
+        "type": "trap",
+        "q": "What four conditions must hold to call something Binomial?",
+        "a": "Fixed n, independent trials, two outcomes, constant p.",
+        "note": "Break any one — e.g. p drifts, or trials interact — and it isn't Binomial."
+      },
+      {
+        "id": "d13",
+        "type": "intuition",
+        "q": "Why is the Geometric distribution called memoryless?",
+        "a": "Past failures don't change the odds of the next trial.",
+        "note": "The only memoryless discrete distribution — the exponential's discrete twin."
+      }
+    ]
+  },
+  {
+    "id": "continuous-rv",
+    "label": "Continuous RVs",
+    "sub": "Normal · Exponential · Beta · Uniform",
+    "source": "Strategy §Continuous RVs",
+    "cards": [
+      {
+        "id": "c1",
+        "type": "scenario",
+        "q": "Time between consecutive customer arrivals, given a Poisson process.",
+        "a": "Exponential",
+        "note": "Waiting time between events in a Poisson process; memoryless."
+      },
+      {
+        "id": "c2",
+        "type": "scenario",
+        "q": "Heights of adults — clustered around a centre with symmetric spread.",
+        "a": "Normal (approximately)",
+        "note": "Many small additive factors → Central Limit Theorem."
+      },
+      {
+        "id": "c3",
+        "type": "scenario",
+        "q": "A random number equally likely anywhere in [0, 1].",
+        "a": "Uniform",
+        "note": "Flat density: no value in the range is favoured over another."
+      },
+      {
+        "id": "c4",
+        "type": "scenario",
+        "q": "Your belief about an unknown coin's bias p, as a distribution on [0, 1].",
+        "a": "Beta",
+        "note": "Lives on [0, 1], so it's the natural model for an unknown probability."
+      },
+      {
+        "id": "c5",
+        "type": "intuition",
+        "q": "Centre and spread of a Normal",
+        "qs": "μ, σ",
+        "a": "μ centres the bell; σ sets its width.",
+        "note": "68% of the mass lands within 1σ of μ. Bigger σ = more spread."
+      },
+      {
+        "id": "c6",
+        "type": "intuition",
+        "q": "Memoryless property (exponential / Poisson)",
+        "a": "Past elapsed time doesn't change future odds.",
+        "note": "Waited 30 min for a bus? The next 10 min are no more likely than before."
+      },
+      {
+        "id": "c7",
+        "type": "check",
+        "q": "Mean of an Exponential with rate λ",
+        "a": "E[X] = 1/λ",
+        "note": "Higher rate → events closer together → shorter average wait."
+      },
+      {
+        "id": "c8",
+        "type": "check",
+        "q": "CDF of an Exponential with rate λ",
+        "qeq": "P(X ≤ x)",
+        "a": "1 − e^{−λx}",
+        "note": "As x → ∞ it approaches 1 — eventually the event happens."
+      },
+      {
+        "id": "c9",
+        "type": "check",
+        "q": "PDF vs CDF — what's the difference?",
+        "a": "PDF = density; CDF = accumulated P(X ≤ x).",
+        "note": "Area under the PDF is probability; the CDF is that area running left to right."
+      },
+      {
+        "id": "c10",
+        "type": "trap",
+        "q": "\"Is the Normal the right default for most real-world data?\"",
+        "a": "No — it's a starting point.",
+        "note": "Real data is often skewed, heavy-tailed, or multimodal. Use Normal with CLT or symmetry evidence."
+      },
+      {
+        "id": "c11",
+        "type": "trap",
+        "q": "\"A PDF is a probability, so it can't exceed 1 — right?\"",
+        "a": "Wrong — a density can exceed 1.",
+        "note": "Only the area integrates to 1. A narrow Uniform on [0, 0.5] has height 2."
+      },
+      {
+        "id": "c12",
+        "type": "intuition",
+        "q": "What is a Beta(1, 1) distribution?",
+        "a": "The Uniform on [0, 1] — a flat prior.",
+        "note": "Every bias equally plausible: 'no prior knowledge' about p."
+      },
+      {
+        "id": "c13",
+        "type": "check",
+        "q": "The 68–95–99.7 rule for a Normal",
+        "a": "≈68% / 95% / 99.7% within 1σ / 2σ / 3σ of μ.",
+        "note": "A fast sanity check for how extreme a value is."
+      },
+      {
+        "id": "c14",
+        "type": "intuition",
+        "q": "Standard deviation vs variance",
+        "a": "σ = √Var. σ is in the data's own units.",
+        "note": "Variance is in squared units; σ is what you compare to the mean."
+      }
+    ]
+  },
+  {
+    "id": "bayesian",
+    "label": "Bayesian",
+    "sub": "inference & updating",
+    "source": "Strategy §Bayesian Inference",
+    "cards": [
+      {
+        "id": "b1",
+        "type": "check",
+        "q": "Bayes' theorem",
+        "qeq": "P(A | B) = ?",
+        "a": "P(B | A) · P(A) / P(B)",
+        "note": "Likelihood × Prior / Evidence. Rearranges belief in light of new data."
+      },
+      {
+        "id": "b2",
+        "type": "intuition",
+        "q": "The prior in Bayesian inference",
+        "a": "Your belief before seeing the data.",
+        "note": "Weak prior → let data dominate; strong prior → hard to shift."
+      },
+      {
+        "id": "b3",
+        "type": "intuition",
+        "q": "The posterior in Bayesian inference",
+        "a": "Your updated belief after seeing the data.",
+        "note": "Combines prior and likelihood; used for prediction and inference."
+      },
+      {
+        "id": "b4",
+        "type": "intuition",
+        "q": "The likelihood in Bayes' theorem",
+        "a": "How well each hypothesis explains the observed data.",
+        "note": "P(data | hypothesis) — read as a function of the hypothesis, not the data."
+      },
+      {
+        "id": "b5",
+        "type": "scenario",
+        "q": "Estimate a coin's p from 7 heads in 10 flips, with no prior belief.",
+        "a": "Beta prior (Beta(1,1)), update to a posterior.",
+        "note": "Prior + observed data → posterior over p."
+      },
+      {
+        "id": "b6",
+        "type": "trap",
+        "q": "\"Uniform prior — so Bayesian and frequentist answers must match?\"",
+        "a": "Often close for large samples, not identical in principle.",
+        "note": "The prior always shapes the posterior, even when weak. Different philosophies."
+      },
+      {
+        "id": "b7",
+        "type": "intuition",
+        "q": "What is a conjugate prior?",
+        "a": "A prior whose posterior stays in the same family.",
+        "note": "Beta prior + Binomial data → Beta posterior. Keeps updating algebraically clean."
+      },
+      {
+        "id": "b8",
+        "type": "check",
+        "q": "Beta(α, β) prior + h heads, t tails (Binomial). Posterior?",
+        "a": "Beta(α + h, β + t)",
+        "note": "Just add successes to α and failures to β. The conjugate-update shortcut."
+      },
+      {
+        "id": "b9",
+        "type": "trap",
+        "q": "\"Strong prior, only a little data — what wins?\"",
+        "a": "The prior dominates the posterior.",
+        "note": "Data has to be plentiful or surprising to move a confident prior."
+      },
+      {
+        "id": "b10",
+        "type": "intuition",
+        "q": "The evidence / marginal P(B) in Bayes' theorem",
+        "a": "A normalizing constant so the posterior sums to 1.",
+        "note": "Same for every hypothesis, so it doesn't change which one wins — only the scale."
+      }
+    ]
+  },
+  {
+    "id": "poisson-process",
+    "label": "Poisson Process",
+    "sub": "events over time",
+    "source": "Strategy §Poisson Processes",
+    "cards": [
+      {
+        "id": "pp1",
+        "type": "scenario",
+        "q": "Buses arriving at a stop: rare, independent, at a constant average rate.",
+        "a": "Poisson process",
+        "note": "Counts are Poisson; gaps between arrivals are Exponential."
+      },
+      {
+        "id": "pp2",
+        "type": "check",
+        "q": "In a rate-λ process, the number of events in time t is…",
+        "a": "Poisson(λt)",
+        "note": "Rate and time scale together: λ = 3/hr, t = 2 hr → Poisson(6)."
+      },
+      {
+        "id": "pp3",
+        "type": "check",
+        "q": "In a rate-λ process, the time between events is…",
+        "a": "Exponential(λ)",
+        "note": "The count/wait duality: Poisson counts, Exponential gaps."
+      },
+      {
+        "id": "pp4",
+        "type": "check",
+        "q": "Probability of zero events in time t",
+        "qeq": "P(N = 0)",
+        "a": "e^{−λt}",
+        "note": "λ = 2/hr, t = 1 hr → P(0) ≈ 0.135."
+      },
+      {
+        "id": "pp5",
+        "type": "intuition",
+        "q": "Why does the memoryless property matter here?",
+        "a": "The wait to the next event doesn't age.",
+        "note": "Elapsed waiting carries no information about how much longer you'll wait."
+      },
+      {
+        "id": "pp6",
+        "type": "trap",
+        "q": "\"I've waited ages — isn't the next bus 'due' now?\"",
+        "a": "No — the process is memoryless.",
+        "note": "The remaining wait has the same distribution it had when you arrived."
+      },
+      {
+        "id": "pp7",
+        "type": "intuition",
+        "q": "The rate λ of a Poisson process",
+        "qs": "λ",
+        "a": "Events per unit time; expected count scales as λt.",
+        "note": "Doubling the window doubles the expected number of events."
+      },
+      {
+        "id": "pp8",
+        "type": "check",
+        "q": "Merge two independent Poisson processes, rates λ₁ and λ₂.",
+        "a": "A Poisson process with rate λ₁ + λ₂.",
+        "note": "Superposition: pooled arrivals are still Poisson, rates add."
+      }
+    ]
+  },
+  {
+    "id": "general",
+    "label": "General",
+    "sub": "foundations",
+    "source": "Strategy §General",
+    "cards": [
+      {
+        "id": "g1",
+        "type": "intuition",
+        "q": "What does independence of A and B mean?",
+        "qeq": "P(A ∩ B) = P(A) · P(B)",
+        "a": "Knowing B tells you nothing about A.",
+        "note": "The joint probability factorises into the product of the two."
+      },
+      {
+        "id": "g2",
+        "type": "check",
+        "q": "Definition of conditional probability",
+        "qeq": "P(A | B) = ?",
+        "a": "P(A ∩ B) / P(B)",
+        "note": "Restrict the world to B, then ask how much of it is also A."
+      },
+      {
+        "id": "g3",
+        "type": "trap",
+        "q": "\"Mutually exclusive events are independent — right?\"",
+        "a": "No — they're strongly dependent.",
+        "note": "If A rules out B, then knowing A happened tells you B didn't. Opposite of independent."
+      },
+      {
+        "id": "g4",
+        "type": "intuition",
+        "q": "What is the expected value of a random variable?",
+        "a": "Its long-run average, Σ x · P(x).",
+        "note": "A probability-weighted mean — not necessarily a value X can actually take."
+      },
+      {
+        "id": "g5",
+        "type": "check",
+        "q": "The complement rule",
+        "qeq": "P(not A) = ?",
+        "a": "1 − P(A)",
+        "note": "Often far easier to compute P(at least one) as 1 − P(none)."
+      },
+      {
+        "id": "g6",
+        "type": "trap",
+        "q": "When do you add probabilities vs multiply them?",
+        "a": "OR adds (minus overlap); AND multiplies (if independent).",
+        "note": "P(A∪B) = P(A)+P(B)−P(A∩B).  P(A∩B) = P(A)P(B) only when independent."
+      }
+    ]
+  }
+]

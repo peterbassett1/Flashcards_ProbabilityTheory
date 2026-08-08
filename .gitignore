@@ -1,0 +1,11 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python
+__pycache__/
+*.pyc
+
+# Local Claude settings (keep launch.json shared, ignore personal overrides)
+.claude/settings.local.json

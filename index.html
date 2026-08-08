@@ -1,0 +1,852 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1c1a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Probability Theory — Flashcards</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/icon-32.png">
+<style>
+  :root{
+    --page:#d3cfe4; --ink:#1c1a2e; --panel:#232037; --panel-2:#2c2942;
+    --line:#b4adcb; --line-dk:#3a3654; --muted:#8b84a3; --muted-lt:#a59ec0;
+    --accent:#6c5ce7; --accent-lt:#8b7ff0; --paper:#f4f2fb;
+    --scenario:#2bb0a3; --intuition:#6c5ce7; --trap:#e0803a; --check:#3aa06a;
+    --sans:"Inter","Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;
+    --serif:Charter,Cambria,Georgia,serif;
+    --mono:ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--page);-webkit-text-size-adjust:100%}
+  body{overscroll-behavior-y:contain;font-family:var(--sans);color:var(--ink)}
+  #app{min-height:100vh;max-width:640px;margin:0 auto;padding:0 18px 40px}
+  #app *{-webkit-tap-highlight-color:transparent}
+  sub{font-size:.72em;line-height:0;vertical-align:sub}
+  sup{font-size:.72em;line-height:0;vertical-align:super}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+  /* ---- header ---- */
+  .hdr{display:flex;align-items:center;gap:11px;padding:22px 2px 18px}
+  .hdr svg{flex:0 0 auto}
+  .hdr h1{font-size:16px;letter-spacing:-.01em;margin:0;font-weight:650}
+  .hdr .tag{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+
+  /* ---- home ---- */
+  .lead{font-size:13.5px;line-height:1.55;color:#4a4560;margin:0 2px 20px;max-width:56ch}
+  .deck{display:block;width:100%;text-align:left;background:var(--paper);border:1px solid var(--line);
+        border-radius:14px;padding:15px 17px;margin:0 0 11px;transition:border-color .12s,transform .05s}
+  .deck:hover{border-color:var(--accent)}
+  .deck:active{transform:scale(.994)}
+  .deck.all{background:var(--ink);border-color:var(--ink)}
+  .deck.all .dk-title,.deck.all .dk-sub{color:#fff}
+  .deck.all .dk-sub{color:var(--muted-lt)}
+  .deck-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+  .dk-title{font-size:15px;font-weight:640}
+  .dk-sub{font-size:12px;color:var(--muted);margin-top:1px}
+  .due{font-family:var(--mono);font-size:11px;letter-spacing:.02em;white-space:nowrap;color:var(--accent);font-weight:600}
+  .due.zero{color:var(--muted)}
+  .deck.all .due{color:var(--accent-lt)}
+  .boxes{display:flex;gap:3px;margin-top:11px}
+  .boxes i{height:5px;flex:1;border-radius:3px;background:var(--line);opacity:.5}
+  .deck.all .boxes i{background:var(--line-dk);opacity:1}
+  .boxes i.f1{background:#c9b7f0;opacity:1}
+  .boxes i.f2{background:#a992ec;opacity:1}
+  .boxes i.f3{background:#8b7ff0;opacity:1}
+  .boxes i.f4{background:#6c5ce7;opacity:1}
+  .boxes i.f5{background:#4a3bc0;opacity:1}
+
+  /* ---- drill ---- */
+  .bar{display:flex;align-items:center;justify-content:space-between;padding:18px 2px 6px}
+  .back{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .back::before{content:"\2190  "}
+  .count{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .scene{perspective:1400px;margin-top:8px}
+  .card{position:relative;width:100%;min-height:340px;transform-style:preserve-3d;
+        transition:transform .42s cubic-bezier(.4,.15,.2,1);cursor:pointer;-webkit-user-select:none;user-select:none}
+  .card.flip{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+        background:var(--paper);border:1px solid var(--line);border-radius:18px;
+        padding:26px 24px;display:flex;flex-direction:column}
+  .face.back-face{transform:rotateY(180deg);background:var(--ink);border-color:var(--ink)}
+  .badge{align-self:flex-start;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;
+         text-transform:uppercase;font-weight:700;color:#fff;padding:4px 9px;border-radius:20px}
+  .badge.scenario{background:var(--scenario)} .badge.intuition{background:var(--intuition)}
+  .badge.trap{background:var(--trap)} .badge.check{background:var(--check)}
+  .prompt{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:6px 0}
+  .q{font-size:19px;line-height:1.42;font-weight:500;color:var(--ink)}
+  .qeq{font-family:var(--serif);font-size:22px;line-height:1.4;color:var(--ink)}
+  .qs{font-family:var(--serif);font-style:italic;font-size:44px;text-align:center;color:var(--accent)}
+  .hint{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+        color:var(--muted);text-align:center;padding-top:6px}
+  .a-lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-lt)}
+  .a{font-size:21px;line-height:1.4;font-weight:600;color:#fff;margin-top:10px}
+  .alt{font-size:13px;line-height:1.5;color:var(--muted-lt);margin-top:14px;
+       padding-top:12px;border-top:1px solid var(--line-dk)}
+  .alt b{color:#cfc8e6;font-weight:600}
+  .note{font-size:13px;line-height:1.55;color:var(--muted-lt);margin-top:auto;padding-top:16px}
+
+  .grade{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:14px}
+  .grade button{padding:15px;border-radius:13px;font-size:14px;font-weight:640;border:1.5px solid}
+  .miss{color:#c9483f;border-color:#e6b6b1;background:#fbeceb}
+  .miss:active{background:#f6dcda}
+  .hit{color:#2f8a5a;border-color:#a9dcc0;background:#e9f7ef}
+  .hit:active{background:#d6efe0}
+  .k{font-family:var(--mono);font-size:10px;opacity:.6;font-weight:500}
+
+  /* ---- done ---- */
+  .done{text-align:center;padding:70px 20px}
+  .done .mk{font-size:40px}
+  .done h2{font-size:20px;margin:14px 0 6px}
+  .done p{color:var(--muted);font-size:13.5px;margin:0 0 22px}
+  .done button,.reset{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+         color:var(--accent);border:1px solid var(--line);border-radius:10px;padding:11px 18px;background:var(--paper)}
+  .footer{text-align:center;padding:26px 0 4px}
+  .reset{color:var(--muted)}
+
+  /* ---- legend ---- */
+  .legend{max-width:640px;margin:0 auto;padding:8px 18px 44px}
+  .legend>summary{cursor:pointer;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+        text-transform:uppercase;color:var(--muted);list-style:none;padding:14px 0;border-top:1px solid var(--line)}
+  .legend>summary::-webkit-details-marker{display:none}
+  .legend>summary::before{content:"\25B8  ";color:var(--accent)}
+  .legend[open]>summary::before{content:"\25BE  "}
+  .legend .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:2px 34px}
+  .legend h4{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:15px 0 5px}
+  .legend dl{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin:0;font-size:12.5px;line-height:1.5}
+  .legend dt{font-family:var(--serif);font-style:italic;color:var(--ink);white-space:nowrap}
+  .legend dd{margin:0;color:#5a5470}
+  .legend .foot{font-size:11.5px;color:var(--muted);margin:16px 0 0;line-height:1.55;max-width:70ch}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<details class="legend">
+<summary>Symbols &amp; card types</summary>
+<div class="grid">
+  <section>
+    <h4>Symbols</h4>
+    <dl>
+      <dt>P(A)</dt><dd>probability of event A</dd>
+      <dt>P(A | B)</dt><dd>probability of A given B</dd>
+      <dt>A ∩ B</dt><dd>A and B both occur</dd>
+      <dt>A ∪ B</dt><dd>A or B (or both)</dd>
+      <dt>E[X]</dt><dd>expected value (mean) of X</dd>
+      <dt>Var[X]</dt><dd>variance of X</dd>
+      <dt>λ (lambda)</dt><dd>rate / expected count per unit</dd>
+      <dt>μ, σ</dt><dd>mean and standard deviation</dd>
+      <dt>p</dt><dd>success probability per trial</dd>
+      <dt>α, β</dt><dd>shape parameters (Beta)</dd>
+      <dt>e<sup>−λt</sup></dt><dd>exponential decay term</dd>
+      <dt>Σ</dt><dd>sum of</dd>
+    </dl>
+  </section>
+  <section>
+    <h4>The four card types</h4>
+    <dl>
+      <dt>Scenario</dt><dd>a real situation → which distribution fits</dd>
+      <dt>Intuition</dt><dd>a symbol or concept → its felt meaning</dd>
+      <dt>Trap</dt><dd>a common mistake → the corrected thinking</dd>
+      <dt>Quick-check</dt><dd>a formula or fact → the one-line answer</dd>
+    </dl>
+    <p class="foot">Grade honestly. <b>Had it</b> promotes a card to a longer interval;
+    <b>Missed it</b> sends it back to daily review. Progress is saved on this device only.</p>
+  </section>
+</div>
+</details>
+
+<script type="application/json" id="deck-data">[
+  {
+    "id": "discrete-rv",
+    "label": "Discrete RVs",
+    "sub": "Binomial · Poisson · Geometric",
+    "source": "Strategy §Discrete RVs",
+    "cards": [
+      {
+        "id": "d1",
+        "type": "scenario",
+        "q": "Rolling a fair die 20 times. How many 6s do you get?",
+        "a": "Binomial",
+        "note": "Fixed number of independent trials, two outcomes (6 / not-6), constant p."
+      },
+      {
+        "id": "d2",
+        "type": "scenario",
+        "q": "Emails arriving in a fixed hour. Rare, independent, can cluster.",
+        "a": "Poisson",
+        "note": "Count of rare independent events in a fixed interval."
+      },
+      {
+        "id": "d3",
+        "type": "scenario",
+        "q": "Flipping a coin until the first head appears. How many flips?",
+        "a": "Geometric",
+        "note": "Number of independent trials up to (and including) the first success."
+      },
+      {
+        "id": "d4",
+        "type": "scenario",
+        "q": "Number of defective items in a batch of 50, with a fixed defect rate.",
+        "a": "Binomial",
+        "note": "n = 50 fixed trials, each item defective or not, constant probability."
+      },
+      {
+        "id": "d5",
+        "type": "intuition",
+        "q": "The success probability in a Binomial",
+        "qs": "p",
+        "a": "Probability of success on each single trial.",
+        "note": "Near 0 → successes rare; p = 0.5 → symmetric distribution."
+      },
+      {
+        "id": "d6",
+        "type": "intuition",
+        "q": "The rate parameter of a Poisson",
+        "qs": "λ",
+        "a": "Expected count per unit time or space.",
+        "note": "Emails average 3/hr → λ = 3. Higher λ = expect more events."
+      },
+      {
+        "id": "d7",
+        "type": "check",
+        "q": "Mean and variance of a Binomial(n, p)",
+        "a": "E[X] = np,  Var[X] = np(1−p)",
+        "note": "As p → 0 the variance shrinks — fewer successes overall."
+      },
+      {
+        "id": "d8",
+        "type": "check",
+        "q": "Mean and variance of a Poisson(λ)",
+        "a": "E[X] = λ  and  Var[X] = λ",
+        "note": "Mean equals variance — a Poisson fingerprint. If Var ≫ mean, it's overdispersed."
+      },
+      {
+        "id": "d9",
+        "type": "check",
+        "q": "Mean of a Geometric — trials until the first success (p)",
+        "a": "E[X] = 1/p",
+        "note": "p = 0.2 → expect 5 trials. Rarer success = longer wait."
+      },
+      {
+        "id": "d10",
+        "type": "check",
+        "q": "For a Poisson(λ), the probability of zero events",
+        "qeq": "P(N = 0)",
+        "a": "e^{−λ}",
+        "note": "λ = 2 → P(0) ≈ 0.135. Not zero: rare events often just don't happen."
+      },
+      {
+        "id": "d11",
+        "type": "trap",
+        "q": "\"Can I use a Poisson approximation to a Binomial with n = 20, p = 0.4?\"",
+        "a": "No — np = 8 is too big.",
+        "note": "Poisson approximates Binomial when n is large and p is small (np stays moderate)."
+      },
+      {
+        "id": "d12",
+        "type": "trap",
+        "q": "What four conditions must hold to call something Binomial?",
+        "a": "Fixed n, independent trials, two outcomes, constant p.",
+        "note": "Break any one — e.g. p drifts, or trials interact — and it isn't Binomial."
+      },
+      {
+        "id": "d13",
+        "type": "intuition",
+        "q": "Why is the Geometric distribution called memoryless?",
+        "a": "Past failures don't change the odds of the next trial.",
+        "note": "The only memoryless discrete distribution — the exponential's discrete twin."
+      }
+    ]
+  },
+  {
+    "id": "continuous-rv",
+    "label": "Continuous RVs",
+    "sub": "Normal · Exponential · Beta · Uniform",
+    "source": "Strategy §Continuous RVs",
+    "cards": [
+      {
+        "id": "c1",
+        "type": "scenario",
+        "q": "Time between consecutive customer arrivals, given a Poisson process.",
+        "a": "Exponential",
+        "note": "Waiting time between events in a Poisson process; memoryless."
+      },
+      {
+        "id": "c2",
+        "type": "scenario",
+        "q": "Heights of adults — clustered around a centre with symmetric spread.",
+        "a": "Normal (approximately)",
+        "note": "Many small additive factors → Central Limit Theorem."
+      },
+      {
+        "id": "c3",
+        "type": "scenario",
+        "q": "A random number equally likely anywhere in [0, 1].",
+        "a": "Uniform",
+        "note": "Flat density: no value in the range is favoured over another."
+      },
+      {
+        "id": "c4",
+        "type": "scenario",
+        "q": "Your belief about an unknown coin's bias p, as a distribution on [0, 1].",
+        "a": "Beta",
+        "note": "Lives on [0, 1], so it's the natural model for an unknown probability."
+      },
+      {
+        "id": "c5",
+        "type": "intuition",
+        "q": "Centre and spread of a Normal",
+        "qs": "μ, σ",
+        "a": "μ centres the bell; σ sets its width.",
+        "note": "68% of the mass lands within 1σ of μ. Bigger σ = more spread."
+      },
+      {
+        "id": "c6",
+        "type": "intuition",
+        "q": "Memoryless property (exponential / Poisson)",
+        "a": "Past elapsed time doesn't change future odds.",
+        "note": "Waited 30 min for a bus? The next 10 min are no more likely than before."
+      },
+      {
+        "id": "c7",
+        "type": "check",
+        "q": "Mean of an Exponential with rate λ",
+        "a": "E[X] = 1/λ",
+        "note": "Higher rate → events closer together → shorter average wait."
+      },
+      {
+        "id": "c8",
+        "type": "check",
+        "q": "CDF of an Exponential with rate λ",
+        "qeq": "P(X ≤ x)",
+        "a": "1 − e^{−λx}",
+        "note": "As x → ∞ it approaches 1 — eventually the event happens."
+      },
+      {
+        "id": "c9",
+        "type": "check",
+        "q": "PDF vs CDF — what's the difference?",
+        "a": "PDF = density; CDF = accumulated P(X ≤ x).",
+        "note": "Area under the PDF is probability; the CDF is that area running left to right."
+      },
+      {
+        "id": "c10",
+        "type": "trap",
+        "q": "\"Is the Normal the right default for most real-world data?\"",
+        "a": "No — it's a starting point.",
+        "note": "Real data is often skewed, heavy-tailed, or multimodal. Use Normal with CLT or symmetry evidence."
+      },
+      {
+        "id": "c11",
+        "type": "trap",
+        "q": "\"A PDF is a probability, so it can't exceed 1 — right?\"",
+        "a": "Wrong — a density can exceed 1.",
+        "note": "Only the area integrates to 1. A narrow Uniform on [0, 0.5] has height 2."
+      },
+      {
+        "id": "c12",
+        "type": "intuition",
+        "q": "What is a Beta(1, 1) distribution?",
+        "a": "The Uniform on [0, 1] — a flat prior.",
+        "note": "Every bias equally plausible: 'no prior knowledge' about p."
+      },
+      {
+        "id": "c13",
+        "type": "check",
+        "q": "The 68–95–99.7 rule for a Normal",
+        "a": "≈68% / 95% / 99.7% within 1σ / 2σ / 3σ of μ.",
+        "note": "A fast sanity check for how extreme a value is."
+      },
+      {
+        "id": "c14",
+        "type": "intuition",
+        "q": "Standard deviation vs variance",
+        "a": "σ = √Var. σ is in the data's own units.",
+        "note": "Variance is in squared units; σ is what you compare to the mean."
+      }
+    ]
+  },
+  {
+    "id": "bayesian",
+    "label": "Bayesian",
+    "sub": "inference & updating",
+    "source": "Strategy §Bayesian Inference",
+    "cards": [
+      {
+        "id": "b1",
+        "type": "check",
+        "q": "Bayes' theorem",
+        "qeq": "P(A | B) = ?",
+        "a": "P(B | A) · P(A) / P(B)",
+        "note": "Likelihood × Prior / Evidence. Rearranges belief in light of new data."
+      },
+      {
+        "id": "b2",
+        "type": "intuition",
+        "q": "The prior in Bayesian inference",
+        "a": "Your belief before seeing the data.",
+        "note": "Weak prior → let data dominate; strong prior → hard to shift."
+      },
+      {
+        "id": "b3",
+        "type": "intuition",
+        "q": "The posterior in Bayesian inference",
+        "a": "Your updated belief after seeing the data.",
+        "note": "Combines prior and likelihood; used for prediction and inference."
+      },
+      {
+        "id": "b4",
+        "type": "intuition",
+        "q": "The likelihood in Bayes' theorem",
+        "a": "How well each hypothesis explains the observed data.",
+        "note": "P(data | hypothesis) — read as a function of the hypothesis, not the data."
+      },
+      {
+        "id": "b5",
+        "type": "scenario",
+        "q": "Estimate a coin's p from 7 heads in 10 flips, with no prior belief.",
+        "a": "Beta prior (Beta(1,1)), update to a posterior.",
+        "note": "Prior + observed data → posterior over p."
+      },
+      {
+        "id": "b6",
+        "type": "trap",
+        "q": "\"Uniform prior — so Bayesian and frequentist answers must match?\"",
+        "a": "Often close for large samples, not identical in principle.",
+        "note": "The prior always shapes the posterior, even when weak. Different philosophies."
+      },
+      {
+        "id": "b7",
+        "type": "intuition",
+        "q": "What is a conjugate prior?",
+        "a": "A prior whose posterior stays in the same family.",
+        "note": "Beta prior + Binomial data → Beta posterior. Keeps updating algebraically clean."
+      },
+      {
+        "id": "b8",
+        "type": "check",
+        "q": "Beta(α, β) prior + h heads, t tails (Binomial). Posterior?",
+        "a": "Beta(α + h, β + t)",
+        "note": "Just add successes to α and failures to β. The conjugate-update shortcut."
+      },
+      {
+        "id": "b9",
+        "type": "trap",
+        "q": "\"Strong prior, only a little data — what wins?\"",
+        "a": "The prior dominates the posterior.",
+        "note": "Data has to be plentiful or surprising to move a confident prior."
+      },
+      {
+        "id": "b10",
+        "type": "intuition",
+        "q": "The evidence / marginal P(B) in Bayes' theorem",
+        "a": "A normalizing constant so the posterior sums to 1.",
+        "note": "Same for every hypothesis, so it doesn't change which one wins — only the scale."
+      }
+    ]
+  },
+  {
+    "id": "poisson-process",
+    "label": "Poisson Process",
+    "sub": "events over time",
+    "source": "Strategy §Poisson Processes",
+    "cards": [
+      {
+        "id": "pp1",
+        "type": "scenario",
+        "q": "Buses arriving at a stop: rare, independent, at a constant average rate.",
+        "a": "Poisson process",
+        "note": "Counts are Poisson; gaps between arrivals are Exponential."
+      },
+      {
+        "id": "pp2",
+        "type": "check",
+        "q": "In a rate-λ process, the number of events in time t is…",
+        "a": "Poisson(λt)",
+        "note": "Rate and time scale together: λ = 3/hr, t = 2 hr → Poisson(6)."
+      },
+      {
+        "id": "pp3",
+        "type": "check",
+        "q": "In a rate-λ process, the time between events is…",
+        "a": "Exponential(λ)",
+        "note": "The count/wait duality: Poisson counts, Exponential gaps."
+      },
+      {
+        "id": "pp4",
+        "type": "check",
+        "q": "Probability of zero events in time t",
+        "qeq": "P(N = 0)",
+        "a": "e^{−λt}",
+        "note": "λ = 2/hr, t = 1 hr → P(0) ≈ 0.135."
+      },
+      {
+        "id": "pp5",
+        "type": "intuition",
+        "q": "Why does the memoryless property matter here?",
+        "a": "The wait to the next event doesn't age.",
+        "note": "Elapsed waiting carries no information about how much longer you'll wait."
+      },
+      {
+        "id": "pp6",
+        "type": "trap",
+        "q": "\"I've waited ages — isn't the next bus 'due' now?\"",
+        "a": "No — the process is memoryless.",
+        "note": "The remaining wait has the same distribution it had when you arrived."
+      },
+      {
+        "id": "pp7",
+        "type": "intuition",
+        "q": "The rate λ of a Poisson process",
+        "qs": "λ",
+        "a": "Events per unit time; expected count scales as λt.",
+        "note": "Doubling the window doubles the expected number of events."
+      },
+      {
+        "id": "pp8",
+        "type": "check",
+        "q": "Merge two independent Poisson processes, rates λ₁ and λ₂.",
+        "a": "A Poisson process with rate λ₁ + λ₂.",
+        "note": "Superposition: pooled arrivals are still Poisson, rates add."
+      }
+    ]
+  },
+  {
+    "id": "general",
+    "label": "General",
+    "sub": "foundations",
+    "source": "Strategy §General",
+    "cards": [
+      {
+        "id": "g1",
+        "type": "intuition",
+        "q": "What does independence of A and B mean?",
+        "qeq": "P(A ∩ B) = P(A) · P(B)",
+        "a": "Knowing B tells you nothing about A.",
+        "note": "The joint probability factorises into the product of the two."
+      },
+      {
+        "id": "g2",
+        "type": "check",
+        "q": "Definition of conditional probability",
+        "qeq": "P(A | B) = ?",
+        "a": "P(A ∩ B) / P(B)",
+        "note": "Restrict the world to B, then ask how much of it is also A."
+      },
+      {
+        "id": "g3",
+        "type": "trap",
+        "q": "\"Mutually exclusive events are independent — right?\"",
+        "a": "No — they're strongly dependent.",
+        "note": "If A rules out B, then knowing A happened tells you B didn't. Opposite of independent."
+      },
+      {
+        "id": "g4",
+        "type": "intuition",
+        "q": "What is the expected value of a random variable?",
+        "a": "Its long-run average, Σ x · P(x).",
+        "note": "A probability-weighted mean — not necessarily a value X can actually take."
+      },
+      {
+        "id": "g5",
+        "type": "check",
+        "q": "The complement rule",
+        "qeq": "P(not A) = ?",
+        "a": "1 − P(A)",
+        "note": "Often far easier to compute P(at least one) as 1 − P(none)."
+      },
+      {
+        "id": "g6",
+        "type": "trap",
+        "q": "When do you add probabilities vs multiply them?",
+        "a": "OR adds (minus overlap); AND multiplies (if independent).",
+        "note": "P(A∪B) = P(A)+P(B)−P(A∩B).  P(A∩B) = P(A)P(B) only when independent."
+      }
+    ]
+  }
+]</script>
+<script>
+(function(){
+  "use strict";
+
+  // ---- data ----
+  var DECKS = JSON.parse(document.getElementById("deck-data").textContent);
+  var CARD = {};                    // global-id -> {card, deck}
+  DECKS.forEach(function(dk){
+    dk.cards.forEach(function(c){ CARD[dk.id+":"+c.id] = {card:c, deck:dk}; });
+  });
+
+  // ---- Leitner spaced-repetition ----
+  var KEY = "probdeck:leitner:v1";
+  var DAY = 86400000;
+  var INTERVAL = {1:0, 2:2, 3:4, 4:8, 5:16};   // box -> days until next review
+  var MAXBOX = 5;
+
+  function loadState(){
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
+    catch(e){ return {}; }
+  }
+  function saveState(s){
+    try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){}
+  }
+  var state = loadState();
+
+  function cardMeta(gid){                       // a new card starts in box 1, due now
+    return state[gid] || {box:1, due:0};
+  }
+  function isDue(gid, now){ return cardMeta(gid).due <= now; }
+
+  function grade(gid, hit){
+    var m = cardMeta(gid);
+    var box = hit ? Math.min(m.box + 1, MAXBOX) : 1;
+    var now = Date.now();
+    state[gid] = { box:box, due: now + INTERVAL[box]*DAY };
+    saveState(state);
+  }
+
+  // ---- notation: underscore subscripts, caret superscripts, {..} groups ----
+  function notate(str, parent){
+    var i=0, buf="";
+    function flush(){ if(buf){ parent.appendChild(document.createTextNode(buf)); buf=""; } }
+    while(i < str.length){
+      var ch = str[i];
+      if(ch === "_" || ch === "^"){
+        flush(); i++;
+        var content="";
+        if(str[i] === "{"){ i++; while(i<str.length && str[i]!=="}") content+=str[i++]; i++; }
+        else { while(i<str.length && /[A-Za-z0-9]/.test(str[i])) content+=str[i++]; }
+        var el = document.createElement(ch === "_" ? "sub" : "sup");
+        el.textContent = content;
+        parent.appendChild(el);
+      } else { buf += ch; i++; }
+    }
+    flush();
+  }
+  function el(tag, cls, text){
+    var e = document.createElement(tag);
+    if(cls) e.className = cls;
+    if(text != null) notate(text, e);
+    return e;
+  }
+
+  // ---- app root & routing ----
+  var app = document.getElementById("app");
+  function clear(){ while(app.firstChild) app.removeChild(app.firstChild); }
+
+  function header(){
+    var h = el("div","hdr");
+    h.innerHTML =
+      '<svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">' +
+      '<rect width="30" height="30" rx="7" fill="#1c1a2e"/>' +
+      '<path d="M4 22 C10 22 10 8 15 8 C20 8 20 22 26 22" fill="none" stroke="#6c5ce7" stroke-width="2.1" stroke-linecap="round"/>' +
+      '<line x1="4" y1="22.4" x2="26" y2="22.4" stroke="#4a3bc0" stroke-width="1.4" stroke-linecap="round"/>' +
+      '</svg>';
+    var t = el("div");
+    t.appendChild(el("h1", null, "Probability Theory"));
+    t.appendChild(el("div","tag","recognition · intuition · recall"));
+    h.appendChild(t);
+    return h;
+  }
+
+  // ---- home screen ----
+  function home(){
+    clear();
+    var now = Date.now();
+    app.appendChild(header());
+    app.appendChild(el("p","lead",
+      "Fast recognition drills, not derivations. Read the front, decide what fits, flip, and grade yourself. Pick a deck — or drill everything due."));
+
+    var allCards = [];
+    DECKS.forEach(function(dk){ dk.cards.forEach(function(c){ allCards.push(dk.id+":"+c.id); }); });
+
+    // "All due" aggregate deck
+    var dueAll = allCards.filter(function(g){ return isDue(g, now); }).length;
+    app.appendChild(deckButton({
+      cls:"deck all", title:"All decks", sub:DECKS.length+" topics · "+allCards.length+" cards",
+      due:dueAll, gids:allCards, onpick:function(){ startDrill(allCards, "All decks"); }
+    }));
+
+    DECKS.forEach(function(dk){
+      var gids = dk.cards.map(function(c){ return dk.id+":"+c.id; });
+      var due = gids.filter(function(g){ return isDue(g, now); }).length;
+      app.appendChild(deckButton({
+        cls:"deck", title:dk.label, sub:dk.sub, due:due, gids:gids,
+        onpick:function(){ startDrill(gids, dk.label); }
+      }));
+    });
+
+    var f = el("div","footer");
+    var r = el("button","reset","Reset all progress");
+    r.onclick = function(){
+      if(confirm("Reset spaced-repetition progress for every deck on this device?")){
+        state = {}; saveState(state); home();
+      }
+    };
+    f.appendChild(r);
+    app.appendChild(f);
+    window.scrollTo(0,0);
+  }
+
+  function deckButton(o){
+    var b = el("button", o.cls);
+    var top = el("div","deck-top");
+    var left = el("div");
+    left.appendChild(el("div","dk-title", o.title));
+    left.appendChild(el("div","dk-sub", o.sub));
+    top.appendChild(left);
+    top.appendChild(el("div","due"+(o.due?"":" zero"), o.due ? o.due+" due" : "clear"));
+    b.appendChild(top);
+
+    // box-fill strip: one cell per card, coloured by its Leitner box
+    var strip = el("div","boxes");
+    var counts = {1:0,2:0,3:0,4:0,5:0};
+    o.gids.forEach(function(g){ counts[cardMeta(g).box]++; });
+    for(var box=1; box<=5; box++){
+      var cell = el("i");
+      if(counts[box] > 0) cell.className = "f"+box;
+      cell.title = "box "+box+": "+counts[box];
+      strip.appendChild(cell);
+    }
+    b.appendChild(strip);
+    b.onclick = o.onpick;
+    return b;
+  }
+
+  // ---- drill screen ----
+  var queue = [], title = "", flipped = false, total = 0;
+
+  function startDrill(gids, label){
+    var now = Date.now();
+    queue = gids.filter(function(g){ return isDue(g, now); });
+    if(queue.length === 0){
+      // nothing due — offer the whole set as a free review
+      if(confirm("Nothing is due in “"+label+"”. Review all "+gids.length+" cards anyway?"))
+        queue = gids.slice();
+      else return;
+    }
+    // stable shuffle so order varies session to session without Date/Math.random reliance elsewhere
+    queue = shuffle(queue);
+    title = label; total = queue.length;
+    drill();
+  }
+
+  function shuffle(a){
+    a = a.slice();
+    for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i];a[i]=a[j];a[j]=t; }
+    return a;
+  }
+
+  function drill(){
+    clear();
+    if(queue.length === 0) return done();
+    flipped = false;
+    var gid = queue[0];
+    var entry = CARD[gid], c = entry.card;
+
+    var bar = el("div","bar");
+    var back = el("button","back","decks");
+    back.onclick = home;
+    bar.appendChild(back);
+    bar.appendChild(el("div","count", (total - queue.length + 1) + " / " + total));
+    app.appendChild(bar);
+
+    var scene = el("div","scene");
+    var card = el("div","card");
+
+    // front
+    var front = el("div","face");
+    front.appendChild(el("div","badge "+c.type, typeLabel(c.type)));
+    var prompt = el("div","prompt");
+    if(c.qeq) prompt.appendChild(el("div","qeq", c.qeq));
+    if(c.q) prompt.appendChild(el("div","q", c.q));
+    if(c.qs) prompt.appendChild(el("div","qs", c.qs));
+    front.appendChild(prompt);
+    front.appendChild(el("div","hint","tap to flip"));
+    card.appendChild(front);
+
+    // back
+    var back2 = el("div","face back-face");
+    back2.appendChild(el("div","a-lbl", entry.deck.label));
+    back2.appendChild(el("div","a", c.a));
+    if(c.alt){ var alt = el("div","alt"); alt.appendChild(el("b",null,"Also: ")); notate(c.alt, alt); back2.appendChild(alt); }
+    if(c.note) back2.appendChild(el("div","note", c.note));
+    card.appendChild(back2);
+
+    card.onclick = function(){ if(!flipped) flip(); };
+    scene.appendChild(card);
+    app.appendChild(scene);
+
+    var g = el("div","grade");
+    var miss = el("button","miss"); miss.innerHTML = 'Missed it &nbsp;<span class="k">1</span>';
+    var hit  = el("button","hit");  hit.innerHTML  = 'Had it &nbsp;<span class="k">2</span>';
+    miss.onclick = function(){ answer(gid, false); };
+    hit.onclick  = function(){ answer(gid, true); };
+    g.appendChild(miss); g.appendChild(hit);
+    g.style.visibility = "hidden";
+    app.appendChild(g);
+    currentGrade = g;
+
+    window.scrollTo(0,0);
+
+    function flip(){ flipped = true; card.classList.add("flip"); currentGrade.style.visibility = "visible"; }
+    currentFlip = flip;
+  }
+
+  var currentFlip = null, currentGrade = null;
+
+  function answer(gid, hit){
+    grade(gid, hit);
+    // missed cards cycle back to the end of this session's queue; graded-away cards leave
+    var g = queue.shift();
+    if(!hit) queue.push(g);
+    drill();
+  }
+
+  function typeLabel(t){
+    return t === "scenario" ? "Scenario"
+         : t === "intuition" ? "Intuition"
+         : t === "trap" ? "Trap"
+         : "Quick-check";
+  }
+
+  // ---- done screen ----
+  function done(){
+    clear();
+    var d = el("div","done");
+    d.appendChild(el("div","mk","✓"));
+    d.appendChild(el("h2", null, "Queue clear"));
+    d.appendChild(el("p", null, "“"+title+"” is done for now. Come back as cards fall due."));
+    var b = el("button", null, "Back to decks");
+    b.onclick = home;
+    d.appendChild(b);
+    app.appendChild(d);
+    window.scrollTo(0,0);
+  }
+
+  // ---- keyboard ----
+  document.addEventListener("keydown", function(e){
+    if(e.key === " " || e.code === "Space"){
+      if(currentFlip && !flipped){ e.preventDefault(); currentFlip(); }
+    } else if(flipped && queue.length){
+      if(e.key === "1") answer(queue[0], false);
+      if(e.key === "2") answer(queue[0], true);
+    }
+  });
+
+  // ---- service worker (offline PWA) ----
+  if("serviceWorker" in navigator){
+    window.addEventListener("load", function(){
+      navigator.serviceWorker.register("./sw.js").catch(function(){});
+    });
+  }
+
+  home();
+})();
+</script>
+</body>
+</html>
